@@ -1,16 +1,21 @@
+import { useEffect } from 'react';
+import server from './server';
 
 function Wallet({ address, setAddress, balance, setBalance }) {
-  async function onChange(evt) {
-    const address = evt.target.value;
-    setAddress(address);
-    if (address) {
-      const {
-        data: { balance },
-      } = await server.get(`balance/${address}`);
-      setBalance(balance);
-    } else {
-      setBalance(0);
+  useEffect(() => {
+    async function getBalance() {
+      if (address) {
+        const {
+          data: { balance },
+        } = await server.get(`balance/${address}`);
+        setBalance(balance);
+      }
     }
+    getBalance();
+  }, [address]);
+  
+  function onChange(evt) {
+    setAddress(evt.target.value);
   }
 
   return (
